@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#3b2a8a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Chore Clash">
+<meta name="application-name" content="Chore Clash">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<title>Chore Clash</title>
+<style>
+:root{--bg1:#6ec6ff;--bg2:#b9f3c4;--ink:#23204a;--card:#fff;--gold:#ffc83d;--gold2:#e89b00;--purple:#5a3fd1;--green:#2fbf71;--red:#ff5a5f;--shadow:0 4px 0 rgba(35,32,74,.18);}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{-webkit-user-select:none;user-select:none;overscroll-behavior-y:none}input{-webkit-user-select:text;user-select:text}
+body{font-family:"Nunito","Segoe UI Rounded",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:linear-gradient(180deg,var(--bg1),var(--bg2));min-height:100vh;}
+button{font:inherit;cursor:pointer;border:none}
+header{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,#4b32c3,#3b2a8a);color:#fff;padding:10px 14px;padding-top:max(10px,env(safe-area-inset-top));padding-left:max(14px,env(safe-area-inset-left));padding-right:max(14px,env(safe-area-inset-right));display:flex;align-items:center;gap:10px;box-shadow:0 4px 0 #2a1d66}
+.logo{font-weight:900;font-size:19px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.3px;flex:1;text-shadow:0 2px 0 #2a1d66}
+.logo small{display:block;font-size:11px;font-weight:700;opacity:.75;letter-spacing:.5px}
+.pill{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.25);border-radius:999px;padding:6px 12px 6px 6px;font-weight:900;font-size:17px;border:2px solid rgba(255,255,255,.2)}
+.pill .ic{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:15px}
+.coinIc{background:radial-gradient(circle at 35% 35%,#fff3b0,var(--gold) 45%,var(--gold2));box-shadow:inset 0 -2px 0 rgba(0,0,0,.2)}
+#coinPill.bump{animation:bump .35s}
+@keyframes bump{50%{transform:scale(1.18)}}
+.neg{color:#ffb3b5}
+.iconbtn{background:rgba(255,255,255,.15);color:#fff;width:36px;height:36px;border-radius:12px;font-size:18px}
+main{max-width:720px;margin:0 auto;padding:14px 12px calc(100px + env(safe-area-inset-bottom));padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:50;display:flex;justify-content:center;gap:8px;padding:8px 10px;padding-bottom:max(8px,env(safe-area-inset-bottom));padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right));background:#fff;box-shadow:0 -4px 0 rgba(35,32,74,.08)}
+nav button{flex:1;max-width:200px;background:#eef0ff;color:var(--ink);border-radius:16px;padding:8px 4px;font-weight:900;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:2px;box-shadow:0 3px 0 #d3d6f5}
+nav button span{font-size:22px}
+nav button.on{background:var(--purple);color:#fff;box-shadow:0 3px 0 #3b2a8a}
+.view{display:none}.view.on{display:block;animation:fade .25s}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}}
+.card{background:var(--card);border-radius:20px;padding:14px;box-shadow:var(--shadow);margin-bottom:14px}
+h2{margin:0 0 10px;font-size:18px;font-weight:900;display:flex;align-items:center;gap:8px}
+h2 .sp{flex:1}
+.sub{font-size:12px;font-weight:700;opacity:.6}
+.hero{display:flex;gap:10px;margin-bottom:14px}
+.hero .card{flex:1;margin:0;text-align:center;padding:10px 6px}
+.hero b{display:block;font-size:22px;font-weight:900}
+.hero span{font-size:11px;font-weight:800;opacity:.6;text-transform:uppercase;letter-spacing:.4px}
+.prog{height:14px;background:#eceefa;border-radius:999px;overflow:hidden;margin:6px 0 2px;box-shadow:inset 0 2px 0 rgba(0,0,0,.06)}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,#46d483,#2fbf71);border-radius:999px;transition:width .4s}
+.chore{display:flex;align-items:center;gap:10px;padding:10px;border-radius:16px;background:#f6f7ff;margin-bottom:8px;transition:transform .15s,background .2s}
+.chore.done{background:#e8f9ef}
+.chore.done .nm{text-decoration:line-through;opacity:.55}
+.chk{width:38px;height:38px;flex:none;border-radius:12px;background:#fff;border:3px solid #c9cdf0;display:grid;place-items:center;font-size:20px;color:#fff;transition:.15s}
+.chore.done .chk{background:var(--green);border-color:#22a35e;animation:pop .3s}
+@keyframes pop{50%{transform:scale(1.25) rotate(-8deg)}}
+.chore .info{flex:1;min-width:0}
+.nm{font-weight:800;font-size:15px;overflow-wrap:anywhere}
+.meta{font-size:11px;font-weight:800;opacity:.65;margin-top:2px;display:flex;gap:8px;flex-wrap:wrap}
+.val{flex:none;font-weight:900;background:#fff4cf;color:#a86b00;border-radius:999px;padding:4px 9px;font-size:13px}
+.ed{flex:none;background:transparent;font-size:18px;opacity:.5;padding:4px}
+.btn{background:var(--purple);color:#fff;border-radius:14px;padding:10px 14px;font-weight:900;box-shadow:0 3px 0 #3b2a8a;font-size:14px}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 #3b2a8a}
+.btn.green{background:var(--green);box-shadow:0 3px 0 #1d8a50}
+.btn.gold{background:var(--gold);color:#5a3a00;box-shadow:0 3px 0 var(--gold2)}
+.btn.red{background:var(--red);box-shadow:0 3px 0 #c43a3e}
+.btn.ghost{background:#eef0ff;color:var(--ink);box-shadow:0 3px 0 #d3d6f5}
+.btn.sm{padding:6px 10px;font-size:12px;border-radius:10px}
+.btn:disabled{opacity:.45;filter:grayscale(.6)}
+.empty{text-align:center;padding:16px;font-weight:800;opacity:.55;font-size:14px}
+/* modal */
+.scrim{position:fixed;inset:0;background:rgba(20,16,50,.5);z-index:80;display:none;align-items:flex-end;justify-content:center}
+.scrim.on{display:flex;animation:fade .2s}
+.sheet{background:#fff;width:100%;max-width:520px;border-radius:24px 24px 0 0;padding:18px 16px;padding-bottom:max(18px,env(safe-area-inset-bottom));max-height:88vh;overflow:auto;animation:up .25s}
+@keyframes up{from{transform:translateY(40px)}}
+@media(min-width:600px){.scrim{align-items:center}.sheet{border-radius:24px}}
+label{display:block;font-weight:900;font-size:13px;margin:12px 0 6px}
+input[type=text],input[type=number]{width:100%;padding:12px;border-radius:14px;border:3px solid #dfe2fb;font:inherit;font-weight:800;font-size:16px;outline:none}
+input:focus{border-color:var(--purple)}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1;min-width:70px;background:#eef0ff;border-radius:12px;padding:9px 6px;font-weight:900;font-size:13px;box-shadow:0 3px 0 #d3d6f5;color:var(--ink)}
+.seg button.on{background:var(--purple);color:#fff;box-shadow:0 3px 0 #3b2a8a}
+.row{display:flex;gap:8px;margin-top:16px}
+.row .btn{flex:1}
+/* toasts */
+#toasts{position:fixed;top:calc(70px + env(safe-area-inset-top));left:0;right:0;z-index:90;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;padding:0 12px}
+.toast{pointer-events:auto;background:#23204a;color:#fff;border-radius:16px;padding:10px 14px;font-weight:800;font-size:14px;display:flex;align-items:center;gap:10px;box-shadow:0 6px 18px rgba(0,0,0,.25);animation:tin .3s;max-width:420px}
+.toast.ach{background:linear-gradient(90deg,#ffb800,#ff7a00);color:#3a1d00}
+.toast.bonus{background:linear-gradient(90deg,#2fbf71,#18a0a8)}
+.toast button{background:rgba(255,255,255,.2);color:inherit;border-radius:10px;padding:5px 10px;font-weight:900}
+.toast.out{animation:tout .3s forwards}
+@keyframes tin{from{opacity:0;transform:translateY(-14px) scale(.95)}}
+@keyframes tout{to{opacity:0;transform:translateY(-14px)}}
+.flycoin{position:fixed;z-index:100;width:22px;height:22px;border-radius:50%;pointer-events:none;background:radial-gradient(circle at 35% 35%,#fff3b0,var(--gold) 45%,var(--gold2));box-shadow:0 0 0 2px #fff6;transition:transform .75s cubic-bezier(.5,-0.4,.7,1),opacity .75s}
+.plus{position:fixed;z-index:100;font-weight:900;color:#a86b00;font-size:20px;pointer-events:none;text-shadow:0 2px 0 #fff;animation:rise 1s forwards}
+@keyframes rise{to{transform:translateY(-50px);opacity:0}}
+/* base */
+.boardWrap{position:relative;overflow:hidden;border-radius:20px;background:radial-gradient(ellipse at 50% 60%,#9be7ff 0,#58b7f0 70%);box-shadow:var(--shadow);margin-bottom:14px;padding:6px 0 18px}
+.board{position:relative;margin:0 auto}
+.tile{position:absolute;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);background:#6fd16a;transition:filter .15s}
+.tile.alt{background:#63c45f}
+.tile:hover{filter:brightness(1.08)}
+.island{position:absolute;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);background:#a0703f}
+.island2{position:absolute;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);background:#4caf50}
+.board.placing .tile.free{background:#9af59a;animation:glow 1s infinite alternate}
+.board.placing .tile.busy{background:#d98b7f}
+@keyframes glow{to{filter:brightness(1.15)}}
+.board.placing .bld{pointer-events:none;opacity:.85}
+.bld{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;transform:translate(-50%,-88%);cursor:pointer;transition:transform .2s;line-height:1}
+.bld .em{filter:drop-shadow(0 3px 0 rgba(0,0,0,.25));transition:transform .2s}
+.bld:hover .em{transform:translateY(-3px)}
+.bld.sel .em{animation:bob .8s infinite alternate}
+@keyframes bob{to{transform:translateY(-6px)}}
+.bld .plate{position:absolute;bottom:-6%;width:90%;height:30%;border-radius:50%;z-index:-1;opacity:.85}
+.bld .lv{position:absolute;top:-2px;right:-8px;background:#23204a;color:#fff;font-size:10px;font-weight:900;border-radius:999px;padding:1px 5px;border:2px solid #fff}
+.bld.new .em{animation:drop .45s}
+@keyframes drop{from{transform:translateY(-40px) scale(.6);opacity:0}70%{transform:translateY(3px) scale(1.05)}}
+.boardTop{position:absolute;top:8px;left:10px;right:10px;display:flex;justify-content:space-between;z-index:40;pointer-events:none}
+.tag{background:rgba(35,32,74,.75);color:#fff;font-weight:900;font-size:12px;border-radius:999px;padding:5px 10px}
+.placebar{position:absolute;bottom:8px;left:10px;right:10px;z-index:40;display:none;align-items:center;gap:8px;background:#23204a;color:#fff;border-radius:14px;padding:8px 10px;font-weight:800;font-size:13px}
+.placebar.on{display:flex}.placebar span{flex:1}
+.shop{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
+.item{background:#f6f7ff;border-radius:16px;padding:10px 6px;text-align:center;box-shadow:0 3px 0 #dfe2fb;position:relative;color:var(--ink)}
+.item .e{font-size:30px;display:block;height:36px}
+.item .n{font-weight:900;font-size:13px}
+.item .c{font-weight:900;font-size:12px;color:#a86b00;margin-top:2px}
+.item.locked{opacity:.55;filter:grayscale(.8)}
+.item.poor .c{color:var(--red)}
+.item .lock{position:absolute;top:6px;right:6px;font-size:10px;font-weight:900;background:#23204a;color:#fff;border-radius:8px;padding:2px 5px}
+.bigEm{font-size:56px;text-align:center;display:block;margin:4px 0}
+/* stats */
+.bars{display:flex;align-items:flex-end;gap:6px;height:130px;padding-top:10px}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
+.bar i{display:block;width:100%;border-radius:8px 8px 4px 4px;background:linear-gradient(180deg,var(--gold),var(--gold2));min-height:4px;transition:height .4s}
+.bar.today i{background:linear-gradient(180deg,#8f7bff,var(--purple))}
+.bar b{font-size:11px;font-weight:900}.bar span{font-size:10px;font-weight:800;opacity:.6}
+.bar .full{font-size:11px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat{background:#f6f7ff;border-radius:14px;padding:10px}
+.stat b{display:block;font-size:20px;font-weight:900}.stat span{font-size:11px;font-weight:800;opacity:.6}
+.achs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.ach{display:flex;gap:8px;align-items:center;background:#f6f7ff;border-radius:14px;padding:8px}
+.ach .e{font-size:26px}
+.ach b{font-size:13px;display:block}.ach span{font-size:11px;font-weight:700;opacity:.65}
+.ach.no{opacity:.45;filter:grayscale(1)}
+.settings{display:flex;flex-wrap:wrap;gap:8px}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">⚔️ Chore Clash<small id="dateLbl"></small></div>
+  <div class="pill" title="Day streak"><div class="ic">🔥</div><span id="streakVal">0</span></div>
+  <div class="pill" id="coinPill" title="Coins"><div class="ic coinIc"></div><span id="coinVal">0</span></div>
+  <button class="iconbtn" id="soundBtn" title="Sound">🔇</button>
+</header>
+
+<main>
+  <!-- CHORES -->
+  <section class="view on" id="v-chores">
+    <div class="hero">
+      <div class="card"><b id="hToday">0</b><span>Coins today</span></div>
+      <div class="card"><b id="hMult">x1.0</b><span>Streak boost</span></div>
+      <div class="card"><b id="hLeft">0</b><span>Left today</span></div>
+    </div>
+    <div class="card">
+      <h2>☀️ Daily chores <span class="sp"></span><span class="sub" id="dailyProg"></span></h2>
+      <div class="prog"><i id="dailyBar" style="width:0"></i></div>
+      <div class="sub" id="bonusHint" style="margin-bottom:10px"></div>
+      <div id="dailyList"></div>
+    </div>
+    <div class="card">
+      <h2>📋 To-do <span class="sp"></span><button class="btn ghost sm" id="clearDone">Clear done</button></h2>
+      <div id="onceList"></div>
+    </div>
+    <button class="btn gold" style="width:100%;padding:14px;font-size:16px" id="addBtn">＋ Add chore</button>
+  </section>
+
+  <!-- BASE -->
+  <section class="view" id="v-base">
+    <div class="boardWrap" id="boardWrap">
+      <div class="boardTop"><span class="tag" id="powerTag">⚡ Power 0</span><span class="tag" id="thTag">🏛️ TH 1</span></div>
+      <div class="board" id="board"></div>
+      <div class="placebar" id="placebar"><span id="placeTxt">Tap a green tile</span><button class="btn red sm" id="placeCancel">Cancel</button></div>
+    </div>
+    <div class="card">
+      <h2>🛒 Build <span class="sp"></span><span class="sub">Earn coins by doing chores</span></h2>
+      <div class="shop" id="shop"></div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="view" id="v-stats">
+    <div class="card">
+      <h2>📈 Last 7 days</h2>
+      <div class="bars" id="bars"></div>
+    </div>
+    <div class="card">
+      <h2>📊 Stats</h2>
+      <div class="stats" id="stats"></div>
+    </div>
+    <div class="card">
+      <h2>🏆 Achievements <span class="sp"></span><span class="sub" id="achCount"></span></h2>
+      <div class="achs" id="achs"></div>
+    </div>
+    <div class="card">
+      <h2>⚙️ Save</h2>
+      <div class="settings">
+        <button class="btn ghost" id="exportBtn">⬇️ Export save</button>
+        <button class="btn ghost" id="importBtn">⬆️ Import save</button>
+        <button class="btn red" id="resetBtn">🗑️ Reset everything</button>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+      <p class="sub" style="margin-top:10px">Progress is saved on this device (browser storage). Export a backup to move it to another device.</p>
+    </div>
+  </section>
+</main>
+
+<nav>
+  <button class="on" data-v="chores"><span>✅</span>Chores</button>
+  <button data-v="base"><span>🏰</span>Base</button>
+  <button data-v="stats"><span>🏆</span>Stats</button>
+</nav>
+
+<div id="toasts"></div>
+<div class="scrim" id="scrim"><div class="sheet" id="sheet"></div></div>
+
+<script>
+(()=>{
+'use strict';
+const KEY='choreClash.v1';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
+const dkey=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const today=()=>dkey(new Date());
+const shift=(k,n)=>{const [y,m,d]=k.split('-').map(Number);return dkey(new Date(y,m-1,d+n));};
+const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-3);
+const TIERS=[['Quick',5],['Medium',15],['Big',40]];
+const GRID=8;
+
+/* ---------- buildings ---------- */
+const B={
+  townhall:{name:'Town Hall',em:['🛖','🏠','🏛️','🏰','🏯'],cost:0,up:[100,250,500,900],th:1,max:5,pow:50,unique:true,desc:'Heart of your base. Upgrading unlocks new buildings and raises max levels.'},
+  house:{name:'House',em:['🛖','🏠','🏡','🏘️','🏘️'],cost:30,th:1,max:5,pow:8,desc:'Cozy homes for your villagers.'},
+  farm:{name:'Farm',em:['🌱','🌾','🌽','🌻','🚜'],cost:25,th:1,max:5,pow:6,desc:'Grows food for the village. Purely for looks — coins only come from chores!'},
+  tree:{name:'Tree',em:['🌳','🌲','🌸'],cost:5,th:1,max:3,pow:1,desc:'A bit of green. Cheap and cheerful.'},
+  wall:{name:'Wall',em:['🧱','🧱','🧱','🧱','🧱'],cost:10,th:2,max:5,pow:3,desc:'Keeps the goblins out.'},
+  mine:{name:'Gold Mine',em:['⛏️','🪨','💎','💰','👑'],cost:60,th:2,max:5,pow:10,desc:'Looks rich. Produces zero coins — only chores pay.'},
+  tower:{name:'Archer Tower',em:['🗼','🗼','🗼','🗼','🗼'],cost:120,th:3,max:5,pow:18,desc:'Defends your base with style.'},
+  barracks:{name:'Barracks',em:['⛺','🏕️','🏟️','🏟️','🏟️'],cost:150,th:3,max:5,pow:20,desc:'Trains your (imaginary) army.'},
+  statue:{name:'Hero Statue',em:['🗿','🗿','🗽','🗽','🗽'],cost:300,th:4,max:5,pow:35,desc:'A monument to your chore-crushing legend.'},
+  castle:{name:'Clan Castle',em:['🏰','🏰','🏰','🏰','🏰'],cost:500,th:5,max:5,pow:50,desc:'The crown jewel. Top-tier bragging rights.'},
+};
+const SHOP=['house','farm','tree','wall','mine','tower','barracks','statue','castle'];
+const PLATE=['#9aa0b5','#4cd47c','#4aa8ff','#a46bff','#ffbf2e'];
+const upCost=(b)=>{const d=B[b.type];if(d.up)return d.up[b.level-1];return Math.round(Math.max(d.cost,8)*Math.pow(1.8,b.level));};
+const thLevel=()=>{const t=S.buildings.find(b=>b.type==='townhall');return t?t.level:1;};
+const maxLv=(b)=>b.type==='townhall'?B.townhall.max:Math.min(B[b.type].max,thLevel());
+const power=()=>S.buildings.reduce((s,b)=>s+B[b.type].pow*b.level*(1+(b.level-1)*0.25),0)|0;
+
+/* ---------- achievements ---------- */
+const ACH=[
+  ['first','🎉','First chore','Complete your first chore',()=>S.choresDone>=1],
+  ['ten','🧹','Getting it done','Complete 10 chores',()=>S.choresDone>=10],
+  ['fifty','🦸','Chore hero','Complete 50 chores',()=>S.choresDone>=50],
+  ['hundred','👑','Chore royalty','Complete 100 chores',()=>S.choresDone>=100],
+  ['c100','🪙','Pocket change','Earn 100 coins total',()=>S.totalEarned>=100],
+  ['c500','💰','Money bags','Earn 500 coins total',()=>S.totalEarned>=500],
+  ['c2000','🏦','Tycoon','Earn 2,000 coins total',()=>S.totalEarned>=2000],
+  ['full','✨','Clean sweep','Clear every chore for a day',()=>Object.keys(S.bonus).length>=1],
+  ['s3','🔥','On fire','3-day streak',()=>S.streak.best>=3],
+  ['s7','🌟','Week warrior','7-day streak',()=>S.streak.best>=7],
+  ['s30','🏅','Unstoppable','30-day streak',()=>S.streak.best>=30],
+  ['build','🔨','Builder','Place your first building',()=>S.built>=1],
+  ['ten_b','🏘️','Village','Own 10 buildings',()=>S.buildings.length>=10],
+  ['th3','🏛️','Town Hall 3','Upgrade Town Hall to level 3',()=>thLevel()>=3],
+  ['th5','🏯','Max Town Hall','Upgrade Town Hall to level 5',()=>thLevel()>=5],
+  ['p500','⚡','Powerhouse','Reach 500 base power',()=>power()>=500],
+];
+
+/* ---------- state ---------- */
+function seed(){
+  const t=today();
+  const once=[['Laundry',40],['Dishes',15],['Clean kitchen',40],['Clean out fridge',40],['Master bathroom',40],['Upstairs bathroom',40],['Downstairs bathroom',40],['Sweep downstairs',15],['Swiffer downstairs',15],['Vacuum all upstairs',40],['Clean out vacuum',5]];
+  return {v:1,coins:0,totalEarned:0,choresDone:0,built:0,sound:false,
+    chores:once.map(([name,value])=>({id:uid(),name,value,type:'once',created:t,doneDate:null,streak:0,lastDone:null,rec:null})),
+    log:{},bonus:{},streak:{count:0,last:null,best:0},
+    buildings:[{id:uid(),type:'townhall',x:3,y:3,level:1}],ach:{}};
+}
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&Array.isArray(s.chores)&&Array.isArray(s.buildings))return s;}catch(e){}return seed();}
+let S=load();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}};
+const dayLog=k=>S.log[k]||(S.log[k]={coins:0,count:0});
+
+const curStreak=()=>{const t=today();return (S.streak.last===t||S.streak.last===shift(t,-1))?S.streak.count:0;};
+const mult=()=>1+Math.min(curStreak(),10)*0.1;
+const isDone=c=>c.type==='daily'?c.doneDate===today():!!c.doneDate;
+const choreStreak=c=>{const t=today();return (c.lastDone===t||c.lastDone===shift(t,-1))?c.streak:0;};
+
+/* ---------- sound (muted by default) ---------- */
+let AC=null;
+function beep(freqs,dur=.09){if(!S.sound)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();freqs.forEach((f,i)=>{const o=AC.createOscillator(),g=AC.createGain();o.type='triangle';o.frequency.value=f;const t0=AC.currentTime+i*dur;g.gain.setValueAtTime(.0001,t0);g.gain.exponentialRampToValueAtTime(.25,t0+.01);g.gain.exponentialRampToValueAtTime(.0001,t0+dur*1.6);o.connect(g).connect(AC.destination);o.start(t0);o.stop(t0+dur*1.8);});}catch(e){}}
+
+/* ---------- toasts & fx ---------- */
+function toast(html,cls='',ms=3200,action){
+  const el=document.createElement('div');el.className='toast '+cls;el.innerHTML='<span>'+html+'</span>';
+  if(action){const b=document.createElement('button');b.textContent=action.label;b.onclick=()=>{action.fn();kill();};el.appendChild(b);}
+  $('#toasts').appendChild(el);
+  const kill=()=>{if(!el.isConnected)return;el.classList.add('out');setTimeout(()=>el.remove(),300);};
+  setTimeout(kill,ms);
+  while($('#toasts').children.length>4)$('#toasts').firstChild.remove();
+}
+function burst(fromEl,amt){
+  const r=fromEl.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+  const t=$('#coinPill').getBoundingClientRect(),tx=t.left+18,ty=t.top+t.height/2;
+  const p=document.createElement('div');p.className='plus';p.textContent='+'+amt;p.style.left=(cx-14)+'px';p.style.top=(cy-30)+'px';document.body.appendChild(p);setTimeout(()=>p.remove(),1000);
+  const n=Math.min(12,4+Math.round(amt/5));
+  for(let i=0;i<n;i++){
+    const c=document.createElement('div');c.className='flycoin';
+    const a=Math.random()*Math.PI*2,d=20+Math.random()*40;
+    c.style.left=(cx-11)+'px';c.style.top=(cy-11)+'px';document.body.appendChild(c);
+    c.animate([{transform:'translate(0,0) scale(.4)'},{transform:`translate(${Math.cos(a)*d}px,${Math.sin(a)*d}px) scale(1)`}],{duration:220,fill:'forwards',easing:'ease-out'});
+    setTimeout(()=>{c.style.transitionDelay=(i*25)+'ms';c.style.transform=`translate(${tx-cx}px,${ty-cy}px) scale(.6)`;c.style.opacity='.3';},230);
+    setTimeout(()=>c.remove(),1100+i*25);
+  }
+  setTimeout(()=>{const p=$('#coinPill');p.classList.remove('bump');void p.offsetWidth;p.classList.add('bump');},800);
+  beep([880,1175,1568],.07);
+}
+
+/* ---------- economy ---------- */
+function earn(n,k){S.coins+=n;S.totalEarned+=n;const L=dayLog(k||today());L.coins+=n;}
+function unearn(n,k){S.coins-=n;S.totalEarned-=n;const L=dayLog(k);L.coins-=n;}
+
+function dayClear(){
+  const t=today(),daily=S.chores.filter(c=>c.type==='daily');
+  if(daily.length)return daily.every(c=>c.doneDate===t);
+  // no daily chores: clearing every to-do (with at least one done today) counts as a clean sweep
+  const once=S.chores.filter(c=>c.type==='once');
+  return once.length>0&&once.every(c=>c.doneDate)&&once.some(c=>c.doneDate===t);
+}
+function checkBonus(){
+  const t=today();
+  if(S.bonus[t]||!dayClear())return;
+  const prev={...S.streak};
+  const count=S.streak.last===shift(t,-1)?S.streak.count+1:1;
+  S.streak={count,last:t,best:Math.max(S.streak.best||0,count)};
+  const amt=Math.round(25*(1+Math.min(count-1,10)*0.1));
+  S.bonus[t]={amt,prev};earn(amt,t);
+  setTimeout(()=>{toast(`🎊 Clean sweep! +${amt} 🪙 bonus · 🔥 ${count}-day streak`,'bonus',4500);beep([523,659,784,1047],.1);},700);
+}
+function revokeBonus(){
+  const t=today(),b=S.bonus[t];if(!b||dayClear())return;
+  unearn(b.amt,t);S.streak={...b.prev,best:S.streak.best};delete S.bonus[t];
+  toast('Clean-sweep bonus removed (−'+b.amt+')','',2500);
+}
+function complete(c,el){
+  if(isDone(c))return;
+  const t=today(),amt=Math.max(1,Math.round(c.value*mult()));
+  c.rec={amt,date:t,prevStreak:c.streak,prevLast:c.lastDone};
+  if(c.type==='daily'){c.streak=c.lastDone===shift(t,-1)?c.streak+1:(c.lastDone===t?c.streak:1);c.lastDone=t;}
+  c.doneDate=t;
+  earn(amt,t);dayLog(t).count++;S.choresDone++;
+  checkBonus();save();
+  burst(el,amt);
+  toast(`+${amt} 🪙 ${esc(c.name)}`,'',4000,{label:'Undo',fn:()=>uncomplete(c.id)});
+  afterChange();
+}
+function uncomplete(id){
+  const c=S.chores.find(x=>x.id===id);if(!c||!c.doneDate||!c.rec)return;
+  const r=c.rec;unearn(r.amt,r.date);const L=dayLog(r.date);L.count=Math.max(0,L.count-1);S.choresDone=Math.max(0,S.choresDone-1);
+  if(c.type==='daily'){c.streak=r.prevStreak;c.lastDone=r.prevLast;}
+  c.doneDate=null;c.rec=null;
+  revokeBonus();save();beep([400,300]);afterChange();
+}
+
+/* ---------- day rollover ---------- */
+let shownDay=today();
+setInterval(()=>{if(today()!==shownDay){shownDay=today();renderAll();}},30000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&today()!==shownDay){shownDay=today();renderAll();}});
+
+/* ---------- render: header & chores ---------- */
+function renderHeader(){
+  $('#coinVal').textContent=S.coins.toLocaleString();$('#coinVal').classList.toggle('neg',S.coins<0);
+  $('#streakVal').textContent=curStreak();
+  $('#soundBtn').textContent=S.sound?'🔊':'🔇';
+  $('#dateLbl').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'});
+}
+function choreRow(c){
+  const d=isDone(c),st=choreStreak(c),amt=Math.round(c.value*mult());
+  const meta=c.type==='daily'?`<span>🔁 Daily</span><span>🔥 ${st} day${st===1?'':'s'}</span>`:`<span>📌 To-do</span>${d?'<span>✔ done '+(c.doneDate===today()?'today':esc(c.doneDate))+'</span>':''}`;
+  return `<div class="chore ${d?'done':''}" data-id="${c.id}">
+    <button class="chk" data-act="tog" aria-label="${d?'Undo':'Complete'} ${esc(c.name)}">${d?'✓':''}</button>
+    <div class="info"><div class="nm">${esc(c.name)}</div><div class="meta">${meta}</div></div>
+    <span class="val">🪙 ${d&&c.rec?c.rec.amt:amt}</span>
+    <button class="ed" data-act="edit" aria-label="Edit">✏️</button></div>`;
+}
+function renderChores(){
+  const t=today(),daily=S.chores.filter(c=>c.type==='daily'),once=S.chores.filter(c=>c.type==='once');
+  once.sort((a,b)=>(!!a.doneDate)-(!!b.doneDate));
+  $('#dailyList').innerHTML=daily.length?daily.map(choreRow).join(''):'<div class="empty">No daily chores yet. Add one that repeats every day to build a streak 🔥</div>';
+  $('#onceList').innerHTML=once.length?once.map(choreRow).join(''):'<div class="empty">Nothing on the list. Nice! 🎉</div>';
+  const dd=daily.filter(c=>c.doneDate===t).length;
+  let tot,done;
+  if(daily.length){tot=daily.length;done=dd;}else{tot=once.length;done=once.filter(c=>c.doneDate).length;}
+  $('#dailyProg').textContent=daily.length?`${dd}/${daily.length}`:'';
+  $('#dailyBar').style.width=(tot?done/tot*100:0)+'%';
+  const nextBonus=Math.round(25*(1+Math.min((S.streak.last===shift(t,-1)?S.streak.count:0),10)*0.1));
+  $('#bonusHint').textContent=S.bonus[t]?`✨ Clean sweep earned today: +${S.bonus[t].amt} bonus`:
+    (daily.length?`Finish all daily chores for a +${nextBonus} bonus and keep your streak going`:`No daily chores, so clear the whole to-do list (${done}/${tot}) for a +${nextBonus} bonus`);
+  $('#hToday').textContent=(S.log[t]?S.log[t].coins:0);
+  $('#hMult').textContent='x'+mult().toFixed(1);
+  $('#hLeft').textContent=S.chores.filter(c=>!isDone(c)).length;
+  $('#clearDone').style.display=once.some(c=>c.doneDate)?'':'none';
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b)return;const row=b.closest('.chore');if(!row)return;
+  const c=S.chores.find(x=>x.id===row.dataset.id);if(!c)return;
+  if(b.dataset.act==='tog'){isDone(c)?uncomplete(c.id):complete(c,b);}
+  else if(b.dataset.act==='edit')editChore(c);
+});
+$('#clearDone').onclick=()=>{S.chores=S.chores.filter(c=>!(c.type==='once'&&c.doneDate));save();renderChores();};
+$('#addBtn').onclick=()=>editChore(null);
+
+/* ---------- chore editor ---------- */
+function openSheet(html){$('#sheet').innerHTML=html;$('#scrim').classList.add('on');}
+function closeSheet(){$('#scrim').classList.remove('on');}
+$('#scrim').addEventListener('click',e=>{if(e.target.id==='scrim')closeSheet();});
+function editChore(c){
+  const isNew=!c;let type=c?c.type:'once',val=c?c.value:15;
+  const tierOn=v=>TIERS.some(t=>t[1]===v);
+  openSheet(`<h2>${isNew?'＋ New chore':'✏️ Edit chore'}</h2>
+    <label>Chore</label><input type="text" id="fName" maxlength="60" placeholder="e.g. Water the plants" value="${c?esc(c.name):''}">
+    <label>Type</label><div class="seg" id="fType"><button data-t="daily">🔁 Daily (repeats)</button><button data-t="once">📌 One-off</button></div>
+    <label>Coin reward</label><div class="seg" id="fTier">${TIERS.map(([n,v])=>`<button data-v="${v}">${n} ${v}</button>`).join('')}<button data-v="custom">Custom</button></div>
+    <input type="number" id="fCustom" min="1" max="500" style="margin-top:8px;display:none" placeholder="Coins (1–500)">
+    <div class="row">${isNew?'':'<button class="btn red" id="fDel">Delete</button>'}<button class="btn ghost" id="fCancel">Cancel</button><button class="btn green" id="fSave">Save</button></div>`);
+  const sync=()=>{
+    document.querySelectorAll('#fType button').forEach(b=>b.classList.toggle('on',b.dataset.t===type));
+    const custom=!tierOn(val);
+    document.querySelectorAll('#fTier button').forEach(b=>b.classList.toggle('on',custom?b.dataset.v==='custom':+b.dataset.v===val));
+    $('#fCustom').style.display=custom?'block':'none';if(custom)$('#fCustom').value=val||'';
+  };
+  $('#fType').onclick=e=>{const b=e.target.closest('button');if(b){type=b.dataset.t;sync();}};
+  $('#fTier').onclick=e=>{const b=e.target.closest('button');if(!b)return;val=b.dataset.v==='custom'?(tierOn(val)?25:val):+b.dataset.v;sync();if(b.dataset.v==='custom')$('#fCustom').focus();};
+  $('#fCustom').oninput=e=>{val=Math.max(1,Math.min(500,parseInt(e.target.value)||1));};
+  $('#fCancel').onclick=closeSheet;
+  if(!isNew)$('#fDel').onclick=()=>{if(confirm('Delete "'+c.name+'"? Coins already earned are kept.')){S.chores=S.chores.filter(x=>x.id!==c.id);checkBonus();save();closeSheet();afterChange();}};
+  $('#fSave').onclick=()=>{
+    const name=$('#fName').value.trim();if(!name){$('#fName').focus();return;}
+    if(isNew){S.chores.push({id:uid(),name,value:val,type,created:today(),doneDate:null,streak:0,lastDone:null,rec:null});}
+    else{const was=c.type;c.name=name;c.value=val;if(was!==type){c.type=type;if(type==='daily'&&c.doneDate&&c.doneDate!==today()){c.doneDate=null;c.rec=null;}}}
+    save();closeSheet();afterChange();
+  };
+  sync();if(isNew)setTimeout(()=>$('#fName').focus(),50);
+}
+
+/* ---------- base ---------- */
+let mode=null; // {kind:'place',type} | {kind:'move',id}
+let selId=null,lastNew=null;
+function geom(){const w=Math.min($('#boardWrap').clientWidth-16,600);const tw=Math.floor(w/GRID);return {tw,th:Math.round(tw/2),top:tw*1.1};}
+function renderBase(){
+  const {tw,th,top}=geom(),board=$('#board');
+  const W=tw*GRID,H=th*GRID+top+th*0.6;board.style.width=W+'px';board.style.height=H+'px';
+  board.classList.toggle('placing',!!mode);
+  const occ={};S.buildings.forEach(b=>occ[b.x+','+b.y]=b);
+  let h=`<div class="island" style="left:${-tw*0.15}px;top:${top+th*0.35}px;width:${W+tw*0.3}px;height:${th*GRID+th*0.3}px"></div>
+         <div class="island2" style="left:${-tw*0.12}px;top:${top-th*0.06}px;width:${W+tw*0.24}px;height:${th*GRID+th*0.12}px"></div>`;
+  for(let y=0;y<GRID;y++)for(let x=0;x<GRID;x++){
+    const L=(x-y+GRID-1)*tw/2,T=(x+y)*th/2+top,busy=occ[x+','+y]&&!(mode&&mode.kind==='move'&&occ[x+','+y].id===mode.id);
+    h+=`<div class="tile ${(x+y)%2?'alt':''} ${busy?'busy':'free'}" data-x="${x}" data-y="${y}" style="left:${L}px;top:${T}px;width:${tw}px;height:${th}px"></div>`;
+  }
+  S.buildings.slice().sort((a,b)=>(a.x+a.y)-(b.x+b.y)).forEach(b=>{
+    const d=B[b.type],L=(b.x-b.y+GRID-1)*tw/2+tw/2,T=(b.x+b.y)*th/2+top+th/2;
+    const sc=(b.type==='townhall'?1.15:b.type==='tree'||b.type==='wall'?0.75:0.9)*(1+(b.level-1)*0.09);
+    const fs=Math.round(tw*0.8*sc);const hue=b.type==='wall'||b.type==='tower'?`filter:hue-rotate(${(b.level-1)*55}deg) saturate(${1+(b.level-1)*.2})`:'';
+    h+=`<div class="bld ${selId===b.id?'sel':''} ${lastNew===b.id?'new':''}" data-id="${b.id}" style="left:${L}px;top:${T}px;z-index:${10+b.x+b.y}">
+      <span class="plate" style="background:${PLATE[b.level-1]}"></span>
+      <span class="em" style="font-size:${fs}px;${hue}">${d.em[Math.min(b.level,d.em.length)-1]}</span>
+      ${b.level>1?`<span class="lv">L${b.level}</span>`:''}</div>`;
+  });
+  board.innerHTML=h;lastNew=null;
+  $('#powerTag').textContent='⚡ Power '+power().toLocaleString();
+  $('#thTag').textContent=B.townhall.em[thLevel()-1]+' Town Hall '+thLevel();
+  $('#placebar').classList.toggle('on',!!mode);
+  if(mode)$('#placeTxt').textContent=mode.kind==='place'?`Tap a green tile to place your ${B[mode.type].name}`:'Tap a green tile to move it';
+  renderShop();
+}
+function renderShop(){
+  const th=thLevel();
+  $('#shop').innerHTML=SHOP.map(t=>{const d=B[t],lock=d.th>th,poor=S.coins<d.cost;
+    return `<button class="item ${lock?'locked':''} ${poor&&!lock?'poor':''}" data-buy="${t}">${lock?`<span class="lock">TH${d.th}</span>`:''}<span class="e">${d.em[0]}</span><div class="n">${d.name}</div><div class="c">🪙 ${d.cost}</div></button>`;}).join('');
+}
+$('#shop').addEventListener('click',e=>{
+  const b=e.target.closest('[data-buy]');if(!b)return;const t=b.dataset.buy,d=B[t];
+  if(d.th>thLevel())return toast(`🔒 Upgrade your Town Hall to level ${d.th} to unlock ${d.name}`);
+  if(S.coins<d.cost)return toast(`Need ${d.cost-S.coins} more 🪙 — go crush a chore!`);
+  if(S.buildings.length>=GRID*GRID)return toast('Your base is full!');
+  mode={kind:'place',type:t};selId=null;renderBase();
+  $('#boardWrap').scrollIntoView({behavior:'smooth',block:'start'});
+});
+$('#placeCancel').onclick=()=>{mode=null;renderBase();};
+$('#board').addEventListener('click',e=>{
+  const tile=e.target.closest('.tile'),bld=e.target.closest('.bld');
+  if(mode&&tile){
+    const x=+tile.dataset.x,y=+tile.dataset.y;
+    if(S.buildings.some(b=>b.x===x&&b.y===y&&!(mode.kind==='move'&&b.id===mode.id)))return toast('That tile is taken');
+    if(mode.kind==='place'){const d=B[mode.type];if(S.coins<d.cost){mode=null;renderBase();return;}
+      S.coins-=d.cost;const nb={id:uid(),type:mode.type,x,y,level:1};S.buildings.push(nb);S.built=(S.built||0)+1;lastNew=nb.id;beep([330,440,660]);toast(`🔨 Built a ${d.name}!`);}
+    else{const b=S.buildings.find(b=>b.id===mode.id);if(b){b.x=x;b.y=y;lastNew=b.id;}}
+    mode=null;save();afterChange();return;
+  }
+  if(!mode&&bld){selId=bld.dataset.id;renderBase();showBuilding(selId);}
+});
+function showBuilding(id){
+  const b=S.buildings.find(x=>x.id===id);if(!b)return;const d=B[b.type],mx=maxLv(b),atMax=b.level>=d.max,capped=b.level>=mx&&!atMax;
+  const cost=atMax?0:upCost(b);
+  let unlock='';
+  if(b.type==='townhall'&&!atMax){const nu=SHOP.filter(t=>B[t].th===b.level+1).map(t=>B[t].em[0]+' '+B[t].name);unlock=`<p class="sub">Next level unlocks: ${nu.length?nu.join(', '):'—'} · raises other buildings' max level to ${b.level+1}</p>`;}
+  openSheet(`<span class="bigEm">${d.em[Math.min(b.level,d.em.length)-1]}</span>
+    <h2 style="justify-content:center">${d.name} · Level ${b.level}<span class="sub">/ ${d.max}</span></h2>
+    <p style="text-align:center;font-weight:700;margin:4px 0 8px">${d.desc}</p>${unlock}
+    ${atMax?'<p class="empty">⭐ Max level!</p>':capped?`<p class="empty">🔒 Upgrade Town Hall to level ${b.level+1} to go higher</p>`:''}
+    <div class="row">${b.type==='townhall'?'':'<button class="btn red" id="bSell">Demolish</button>'}<button class="btn ghost" id="bMove">Move</button>
+    ${atMax||capped?'':`<button class="btn gold" id="bUp" ${S.coins<cost?'disabled':''}>⬆ Upgrade 🪙 ${cost}</button>`}</div>
+    <div class="row" style="margin-top:8px"><button class="btn ghost" id="bClose">Close</button></div>`);
+  const done=()=>{selId=null;closeSheet();renderBase();};
+  $('#bClose').onclick=done;
+  $('#bMove').onclick=()=>{mode={kind:'move',id:b.id};done();};
+  if($('#bSell'))$('#bSell').onclick=()=>{const refund=Math.floor(d.cost/2);if(confirm(`Demolish this ${d.name}? You get ${refund} 🪙 back.`)){S.buildings=S.buildings.filter(x=>x.id!==b.id);S.coins+=refund;save();done();afterChange();}};
+  if($('#bUp'))$('#bUp').onclick=()=>{if(S.coins<cost)return;S.coins-=cost;b.level++;lastNew=b.id;save();beep([523,784,1047]);toast(`⬆️ ${d.name} is now level ${b.level}!`);selId=b.id;afterChange();showBuilding(b.id);};
+}
+$('#scrim').addEventListener('click',e=>{if(e.target.id==='scrim'&&selId){selId=null;renderBase();}});
+window.addEventListener('resize',()=>{if($('#v-base').classList.contains('on'))renderBase();});
+
+/* ---------- stats ---------- */
+function renderStats(){
+  const t=today(),days=[];for(let i=6;i>=0;i--)days.push(shift(t,-i));
+  const mx=Math.max(10,...days.map(k=>(S.log[k]||{}).coins||0));
+  $('#bars').innerHTML=days.map(k=>{const L=S.log[k]||{coins:0,count:0},[y,m,d]=k.split('-').map(Number),dn=new Date(y,m-1,d).toLocaleDateString(undefined,{weekday:'short'});
+    return `<div class="bar ${k===t?'today':''}" title="${L.count} chores"><b>${L.coins}</b><i style="height:${Math.max(0,L.coins)/mx*80}%"></i><span>${S.bonus[k]?'✨':''}${dn}</span></div>`;}).join('');
+  const wk=days.reduce((s,k)=>s+((S.log[k]||{}).count||0),0);
+  $('#stats').innerHTML=[['🪙',S.totalEarned.toLocaleString(),'Total coins earned'],['✅',S.choresDone,'Chores done'],['🔥',curStreak(),'Current streak'],['🏅',S.streak.best||0,'Best streak'],['📅',wk,'Chores this week'],['⚡',power(),'Base power']]
+    .map(([e,v,l])=>`<div class="stat"><b>${e} ${v}</b><span>${l}</span></div>`).join('');
+  $('#achs').innerHTML=ACH.map(([id,e,n,desc])=>`<div class="ach ${S.ach[id]?'':'no'}"><span class="e">${e}</span><div><b>${n}</b><span>${desc}</span></div></div>`).join('');
+  $('#achCount').textContent=Object.keys(S.ach).length+'/'+ACH.length;
+}
+function checkAch(){
+  let n=0;ACH.forEach(([id,e,name,desc,test])=>{if(!S.ach[id]&&test()){S.ach[id]=Date.now();n++;setTimeout(()=>{toast(`🏆 Achievement: ${e} <b>${name}</b>`,'ach',4500);beep([784,988,1319,1568],.09);},900+n*400);}});
+  if(n)save();
+}
+
+/* ---------- save tools ---------- */
+$('#exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='chore-clash-save-'+today()+'.json';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);toast('💾 Save exported');};
+$('#importBtn').onclick=()=>$('#importFile').click();
+$('#importFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const s=JSON.parse(r.result);if(!s||!Array.isArray(s.chores)||!Array.isArray(s.buildings)||typeof s.coins!=='number')throw 0;
+  if(!confirm('Replace your current progress with this save?'))return;S=Object.assign(seed(),s);save();renderAll();toast('✅ Save imported');}catch(err){toast('❌ That file is not a valid Chore Clash save');}e.target.value='';};r.readAsText(f);};
+$('#resetBtn').onclick=()=>{if(confirm('Reset EVERYTHING? Chores, coins, base and achievements will be wiped. This cannot be undone.')){localStorage.removeItem(KEY);S=seed();save();mode=null;selId=null;renderAll();toast('Fresh start! 🌱');}};
+$('#soundBtn').onclick=()=>{S.sound=!S.sound;save();renderHeader();beep([660,880]);};
+
+/* ---------- nav ---------- */
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+b.dataset.v));
+  if(b.dataset.v==='base')renderBase();if(b.dataset.v==='stats')renderStats();window.scrollTo(0,0);
+});
+
+function afterChange(){checkAch();renderAll();}
+function renderAll(){renderHeader();renderChores();if($('#v-base').classList.contains('on'))renderBase();else renderShop();renderStats();}
+renderAll();checkAch();save();
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+window.__chore={get state(){return S},save,renderAll};
+})();
+</script>
+</body>
+</html>
